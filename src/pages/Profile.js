@@ -13,7 +13,8 @@ function ProfileScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get('http://localhost:5001/symptoms_server');
+        const result = await axios.get('http://localhost:8010/symptoms_server')
+        // const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/symptoms_server');
         setData(result.data.url);
       } catch (error) {
         console.error('Fetch Error:', error.message);

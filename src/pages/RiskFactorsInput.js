@@ -21,7 +21,8 @@ function RiskFactorInputScreen() {
   useEffect(() => {
     const fetchURL = async () => {
       try {
-        const response = await fetch('http://localhost:5001/risk_factors_server'); // Replace with your actual API URL
+        const response = await fetch('http://localhost:8010/risk_factors_server')
+        // const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/risk_factors_server'); // Replace with your actual API URL
         const data = await response.json();
         setURL(data.url); // Once the data is fetched, update the 'url' state with the received URL
       } catch (error) {
@@ -45,7 +46,8 @@ function RiskFactorInputScreen() {
         if (error.request && connectionAttempts <= 5) {
           // Network error (request was made but no response received)
           const fetchData = async () => {
-            const result = await axios.get('http://localhost:5001/risk_factors_server');
+            const result = await axios.get('http://localhost:8010/risk_factors_server');
+            // const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/risk_factors_server');
             url = result.data.url;
             connectionAttempts = connectionAttempts + 1
             handleRiskFactorFormSend()

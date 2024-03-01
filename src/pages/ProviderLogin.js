@@ -31,7 +31,7 @@ function ProviderLoginScreen() {
             } else if (error.request && connectionAttempts <= 5) {
               // Network error (request was made but no response received)
               const fetchData = async () => {
-                const result = await axios.get('http://localhost:5001');
+                const result = await axios.get('http://localhost:8010');
                 url = result.data.url;
                 setConnectionAttempts(connectionAttempts + 1);
                 handleLogin()

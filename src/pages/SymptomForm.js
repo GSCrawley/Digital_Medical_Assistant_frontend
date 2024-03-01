@@ -19,7 +19,7 @@ function SymptomFormScreen() {
   useEffect(() => {
     const fetchURL = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/disease_server');
+        const response = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/disease_server');
         const data = await response.data;
         setURL(data.url);
       } catch (error) {
@@ -44,7 +44,7 @@ function SymptomFormScreen() {
       if (error.request && connectionAttempts <= 5) {
         const fetchData = async () => {
           try {
-            const result = await axios.get('http://localhost:5001/symptoms_server');
+            const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/symptoms_server');
             url = result.data.url;
             connectionAttempts += 1;
             handleSymptomFormSend();

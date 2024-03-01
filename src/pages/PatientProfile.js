@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import GraphVisualization from '../visuals/graphTest';
 
 function PatientProfileScreen() {
   const [name, setName] = useState('');
@@ -14,10 +15,10 @@ function PatientProfileScreen() {
   const [events, setEvents] = useState(null);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('http://localhost:5001/symptoms_server');
+      const result = await axios.get('http://localhost:8010/symptoms_server');
+      // const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/symptoms_server');
       setData(result.data.url);
     };
     fetchData();
@@ -41,7 +42,8 @@ function PatientProfileScreen() {
         if (error.request && connectionAttempts <= 5) {
           // Network error (request was made but no response received)
           const fetchData = async () => {
-            const result = await axios.get('http://localhost:5001/symptoms_server');
+            const result = await axios.get('http://localhost:8010/symptoms_server');
+            // const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/symptoms_server');
             url = result.data.url;
             connectionAttempts = connectionAttempts + 1
             fetchProtectedContent();
@@ -85,6 +87,7 @@ function PatientProfileScreen() {
         </div>
       </div>
       <div style={styles.history}>
+        <GraphVisualization url={url} inputValue={inputValue} token={token}/>
         <p style={styles.historyText}>Patient Event History</p>
         {events && (
         <div>

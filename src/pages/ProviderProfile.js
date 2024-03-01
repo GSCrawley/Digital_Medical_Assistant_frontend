@@ -34,7 +34,7 @@ function ProviderProfileScreen() {
         }
       } else if (error.request && connectionAttempts <= 5) {
         const fetchData = async () => {
-          const result = await axios.get('http://localhost:5001');
+          const result = await axios.get('http://localhost:8010');
           url = result.data.url;
           connectionAttempts = connectionAttempts + 1
           handleSubmit()

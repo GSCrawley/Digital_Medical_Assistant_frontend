@@ -38,6 +38,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ],
-    "proxy": "https://cognitive-network-manager-rdwl5upzra-uw.a.run.app"
+    "proxy": "http://localhost:3000"
   }
 }
