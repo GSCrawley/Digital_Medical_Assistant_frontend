@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import GraphVisualization from '../visuals/graphTest';
+import EventVisualization from '../visuals/eventGraph';
 
 function PatientProfileScreen() {
   const [name, setName] = useState('');
@@ -42,8 +43,8 @@ function PatientProfileScreen() {
         if (error.request && connectionAttempts <= 5) {
           // Network error (request was made but no response received)
           const fetchData = async () => {
-            const result = await axios.get('http://localhost:8010/symptoms_server');
-            // const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/symptoms_server');
+            // const result = await axios.get('http://localhost:8010/symptoms_server');
+            const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/symptoms_server');
             url = result.data.url;
             connectionAttempts = connectionAttempts + 1
             fetchProtectedContent();
@@ -86,10 +87,10 @@ function PatientProfileScreen() {
           <p style={styles.subtitle}>Other Identifying Info</p>
         </div>
       </div>
+      <p style={styles.historyText}>Patient Associative Memory</p>
       <div style={styles.history}>
         <GraphVisualization url={url} inputValue={inputValue} token={token}/>
-        <p style={styles.historyText}>Patient Event History</p>
-        {events && (
+        {/* {events && (
         <div>
           {Object.entries(events).reverse().map(([timestamp, eventId]) => (
             <div key={timestamp}>
@@ -98,7 +99,23 @@ function PatientProfileScreen() {
             </div>
           ))}
         </div>
-        )}
+        )} */}
+      </div>
+      <br></br>
+      <p style={styles.historyText}>Patient Event History</p>
+      <div style={styles.history}>
+        {/* <div>{events[events.length - 1]}</div> */}
+        <EventVisualization url={url} inputValue={events} token={token}/>
+        {/* {events && (
+        <div>
+          {Object.entries(events).reverse().map(([timestamp, eventId]) => (
+            <div key={timestamp}>
+              <p>{timestamp}</p>
+              <p>{eventId}</p>
+            </div>
+          ))}
+        </div>
+        )} */}
       </div>
       <div style={styles.buttonContainer}>
         <button

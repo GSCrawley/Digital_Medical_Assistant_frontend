@@ -29,7 +29,8 @@ function LoginScreen() {
       } else if (error.request && connectionAttempts <= 5) {
         const fetchData = async () => {
           try {
-            const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/patient_server');
+            // const result = await axios.get('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/patient_server');
+            const result = await axios.get('http://localhost:8010/patient_server');
             url = result.data.url;
             setConnectionAttempts(connectionAttempts + 1);
             handleLogin();

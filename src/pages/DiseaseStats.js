@@ -61,7 +61,8 @@ function DiseaseStatsScreen() {
 
     const fetchRiskURL = async () => {
       try {
-        const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/risk_factors_server');
+        // const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/risk_factors_server');
+        const response = await fetch('http://localhost:8010/risk_factors_server');
         const data = await response.json();
         setRURL(data.url);
       } catch (error) {

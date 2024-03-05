@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "d3";
 
 const GraphVisualization = ({url, inputValue, token}) => {
   const [root, setRoot] = useState('');
@@ -46,7 +46,7 @@ const GraphVisualization = ({url, inputValue, token}) => {
   const svgRef = useRef();
 
   const createGraph = (root, leaf) => {
-    const width = 800;
+    const width = 1600;
     const height = 400;
 
     const svg = d3.select(svgRef.current)
@@ -130,6 +130,8 @@ const GraphVisualization = ({url, inputValue, token}) => {
           return 'blue';
         } else if (d.name.startsWith('D')) {
           return 'red';
+        } else if (d.name.startsWith('R')) {
+            return 'yellow';
         } else if (d.name.startsWith('E')) {
             return 'black';
         } else {
@@ -147,7 +149,7 @@ const GraphVisualization = ({url, inputValue, token}) => {
       .enter()
       .append('text')
       .text(d => d.name)
-      .style('fill', 'white');
+      .style('fill', 'Black');
 
     function dragstarted(event, d) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
