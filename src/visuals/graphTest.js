@@ -16,18 +16,8 @@ const GraphVisualization = ({url, inputValue, token}) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setRoot(response.data);
-
-      const result = await axios.post(
-        `${url}/graph-leaf`,
-        {
-          patient_id: inputValue,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setLeaf(result.data);
+      setRoot(JSON.parse(response.data.root));
+      setLeaf(response.data.leaf);
     } catch (error) {
       console.error(error);
     }
@@ -46,7 +36,7 @@ const GraphVisualization = ({url, inputValue, token}) => {
   const svgRef = useRef();
 
   const createGraph = (root, leaf) => {
-    const width = 1600;
+    const width = 1200;
     const height = 400;
 
     const svg = d3.select(svgRef.current)
@@ -93,6 +83,8 @@ const GraphVisualization = ({url, inputValue, token}) => {
       .force('link', d3.forceLink(links).id(d => d.id).distance(150)) // Adjust the distance value as needed
       .force('charge', d3.forceManyBody().strength(-100))
       .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('x', d3.forceX(width / 2).strength(0.1)) // Add forceX with strength
+      .force('y', d3.forceY(height / 2).strength(0.1)) // Add forceY with strength
       .on('tick', () => {
         // Update node and link positions on each tick
         svg.selectAll('line')
@@ -168,6 +160,7 @@ const GraphVisualization = ({url, inputValue, token}) => {
       d.fy = null;
     }
   };
+
 
   return <svg ref={svgRef}></svg>;
 };

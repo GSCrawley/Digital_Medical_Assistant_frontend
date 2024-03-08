@@ -21,8 +21,8 @@ function CareProviderSymptomFormScreen() {
   useEffect(() => {
     const fetchURL = async () => {
       try {
-        const response = await fetch('http://localhost:8010/disease_server');
-        // const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/disease_server');
+        // const response = await fetch('http://localhost:8010/disease_server');
+        const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/disease_server');
         const data = await response.json();
         setURL(data.url); // Once the data is fetched, update the 'url' state with the received URL
       } catch (error) {

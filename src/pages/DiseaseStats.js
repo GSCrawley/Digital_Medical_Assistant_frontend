@@ -20,8 +20,8 @@ function DiseaseStatsScreen() {
   useEffect( () => {
     const fetchURL = async () => {
       try {
-        const response = await fetch('http://localhost:8010/care_provider_server')
-        // const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/care_provider_server');
+        // const response = await fetch('http://localhost:8010/care_provider_server')
+        const response = await fetch('https://cognitive-network-manager-rdwl5upzra-uw.a.run.app/care_provider_server');
         const data = await response.json();
         setURL(data.url);
         // fetchData();

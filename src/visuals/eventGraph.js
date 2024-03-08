@@ -35,8 +35,8 @@ const EventVisualization = ({url, inputValue, token}) => {
       }, [events]);
 
       const createGraph = (events) => {
-        const width = 1600;
-        const height = 400;
+        const width = 1200;
+        const height = 600;
     
         const svg = d3.select(svgRef.current)
             .attr('width', width)
@@ -75,11 +75,13 @@ const EventVisualization = ({url, inputValue, token}) => {
             prevEventID = eventID;
         });
     
-        // Create D3 force simulation
+        // Create D3 force simulation with bounding box constraints
         const simulation = d3.forceSimulation(Object.values(nodesMap))
             .force('link', d3.forceLink(links).id(d => d.id).distance(50))
             .force('charge', d3.forceManyBody().strength(-100))
             .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('x', d3.forceX().strength(0.1).x(d => Math.max(0, Math.min(width, d.x)))) // Add forceX with bounding box constraints
+            .force('y', d3.forceY().strength(0.1).y(d => Math.max(0, Math.min(height, d.y)))) // Add forceY with bounding box constraints
             .on('tick', () => {
                 svg.selectAll('line')
                     .attr('x1', d => d.source.x)
@@ -116,6 +118,8 @@ const EventVisualization = ({url, inputValue, token}) => {
                     return 'blue';
                 } else if (d.name.startsWith('D')) {
                     return 'red';
+                } else if (d.name.startsWith('R')) {
+                    return 'yellow';
                 } else if (d.name.startsWith('E')) {
                     return 'black';
                 } else {
@@ -152,6 +156,7 @@ const EventVisualization = ({url, inputValue, token}) => {
             d.fy = null;
         }
     };
+    
     
     const svgRef = useRef();
 
