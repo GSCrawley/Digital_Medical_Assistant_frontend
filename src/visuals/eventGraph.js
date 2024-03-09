@@ -4,6 +4,7 @@ import * as d3 from "d3";
 
 const EventVisualization = ({url, inputValue, token}) => {
     const [events, setEvents] = useState({});
+    const [eventActions, setEventActions] = useState({});
 
     const fetchProtectedContent = useCallback(async () => {
         try {
@@ -16,8 +17,13 @@ const EventVisualization = ({url, inputValue, token}) => {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          if (response.data !== 'hi'){
-            setEvents(response.data);
+          if (response.data.leaf !== 'i'){
+            // console.log(response.data.root)
+            setEvents(response.data.leaf);
+          }
+          if (response.data.root !== 'h'){
+            setEventActions(response.data.root);
+            console.log(response.data.root)
           }
         } catch (error) {
           console.error(error);
@@ -32,9 +38,9 @@ const EventVisualization = ({url, inputValue, token}) => {
         if (Object.keys(events).length !== 0) {
           createGraph(events);
         }
-      }, [events]);
+    }, [events, eventActions]);
 
-      const createGraph = (events) => {
+    const createGraph = (events) => {
         const width = 1200;
         const height = 600;
     
@@ -46,22 +52,22 @@ const EventVisualization = ({url, inputValue, token}) => {
         const links = [];
     
         let prevEventID = null;
-    
         // Create links between events and dependent nodes
         Object.keys(events).forEach(eventID => {
-            const dependentNodeIDs = events[eventID];
-    
+            const dependentNodes = events[eventID];
             // Create event node
             if (!nodesMap[eventID]) {
-                const eventNode = { id: eventID, name: eventID };
+                const eventNode = { id: eventID, name: eventActions[eventID] };
                 nodesMap[eventID] = eventNode;
             }
     
             // Create dependent nodes and links
-            dependentNodeIDs.forEach(nodeID => {
+            dependentNodes.forEach(node => {
+                const nodeID = Object.keys(node)[0];
+                const nodeName = Object.values(node)[0];
                 if (!nodesMap[nodeID]) {
-                    const node = { id: nodeID, name: nodeID };
-                    nodesMap[nodeID] = node;
+                    const newNode = { id: nodeID, name: nodeName };
+                    nodesMap[nodeID] = newNode;
                 }
                 // Create links between event node and dependent nodes
                 links.push({ source: eventID, target: nodeID });
@@ -112,15 +118,15 @@ const EventVisualization = ({url, inputValue, token}) => {
             .append('circle')
             .attr('r', 15)
             .style('fill', d => {
-                if (d.name.startsWith('S')) {
+                if (d.id.startsWith('S')) {
                     return 'green';
-                } else if (d.name.startsWith('C')) {
+                } else if (d.id.startsWith('C')) {
                     return 'blue';
-                } else if (d.name.startsWith('D')) {
+                } else if (d.id.startsWith('D')) {
                     return 'red';
-                } else if (d.name.startsWith('R')) {
+                } else if (d.id.startsWith('R')) {
                     return 'yellow';
-                } else if (d.name.startsWith('E')) {
+                } else if (d.id.startsWith('E')) {
                     return 'black';
                 } else {
                     return 'lightblue';
@@ -160,7 +166,7 @@ const EventVisualization = ({url, inputValue, token}) => {
     
     const svgRef = useRef();
 
-    return <svg ref={svgRef}></svg>;
+    return Object.keys(events).length !== 0 ? <svg ref={svgRef}></svg> : null;
 };
 
 export default EventVisualization;

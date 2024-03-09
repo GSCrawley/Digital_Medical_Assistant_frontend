@@ -89,7 +89,7 @@ function PatientProfileScreen() {
       </div>
       <p style={styles.historyText}>Patient Associative Memory</p>
       <div style={styles.history}>
-        <GraphVisualization url={url} inputValue={inputValue} token={token}/>
+        <GraphVisualization url={url} inputValue={inputValue} token={token} name={name}/>
         {/* {events && (
         <div>
           {Object.entries(events).reverse().map(([timestamp, eventId]) => (

@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import * as d3 from "d3";
 
-const GraphVisualization = ({url, inputValue, token}) => {
+const GraphVisualization = ({url, inputValue, token, name}) => {
   const [root, setRoot] = useState('');
   const [leaf, setLeaf] = useState('');
   const fetchProtectedContent = useCallback(async () => {
@@ -16,7 +16,8 @@ const GraphVisualization = ({url, inputValue, token}) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setRoot(JSON.parse(response.data.root));
+    //   setRoot(JSON.parse(response.data.root));
+      setRoot(response.data.root);
       setLeaf(response.data.leaf);
     } catch (error) {
       console.error(error);
@@ -47,13 +48,13 @@ const GraphVisualization = ({url, inputValue, token}) => {
     const links = [];
 
     // Add the original node
-    const rootnodes = [{ id: inputValue, name: inputValue }];
+    const rootnodes = [{ id: inputValue, name: name }];
     nodesMap[inputValue] = rootnodes[0];
 
     // Create nodes from root and leaf data
-    root.forEach(nodeName => {
+    Object.keys(root).forEach(nodeName => {
       if (!nodesMap[nodeName]) {
-        const node = { id: nodeName, name: nodeName };
+        const node = { id: nodeName, name: root[nodeName] };
         rootnodes.push(node);
         nodesMap[nodeName] = node;
       }
@@ -66,25 +67,30 @@ const GraphVisualization = ({url, inputValue, token}) => {
 
     // Create links between root and leaf nodes
     Object.entries(leaf).forEach(([parentNode, children]) => {
-      children.forEach(childNode => {
-        // Avoid duplicates
-        if (!nodesMap[childNode]) {
-          const node = { id: childNode, name: childNode };
-          rootnodes.push(node);
-          nodesMap[childNode] = node;
-        }
-        // Create links
-        links.push({ source: parentNode, target: childNode });
-      });
+        // console.log("PARENT: ", parentNode);
+        children.forEach(childNode => {
+            const childKey = Object.keys(childNode)[0];
+            // console.log("CHILD: ", childKey);
+            // Avoid duplicates
+            if (!nodesMap[childKey]) {
+                const node = { id: childKey, name: childNode[childKey] };
+                rootnodes.push(node);
+                nodesMap[childKey] = node;
+            }
+            // Create links
+            // console.log({ source: parentNode, target: childKey });
+            links.push({ source: parentNode, target: childKey });
+        });
     });
+    
 
     // Create D3 force simulation with increased link distance for more space between nodes
     const simulation = d3.forceSimulation(rootnodes)
       .force('link', d3.forceLink(links).id(d => d.id).distance(150)) // Adjust the distance value as needed
       .force('charge', d3.forceManyBody().strength(-100))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('x', d3.forceX(width / 2).strength(0.1)) // Add forceX with strength
-      .force('y', d3.forceY(height / 2).strength(0.1)) // Add forceY with strength
+      .force('x', d3.forceX().strength(0.1).x(d => Math.max(0, Math.min(width, d.x)))) // Add forceX with bounding box constraints
+      .force('y', d3.forceY().strength(0.1).y(d => Math.max(0, Math.min(height, d.y)))) // Add forceY with bounding box constraints
       .on('tick', () => {
         // Update node and link positions on each tick
         svg.selectAll('line')
@@ -116,15 +122,15 @@ const GraphVisualization = ({url, inputValue, token}) => {
       .append('circle')
       .attr('r', 15)
       .style('fill', d => {
-        if (d.name.startsWith('S')) {
+        if (d.id.startsWith('S')) {
           return 'green';
-        } else if (d.name.startsWith('C')) {
+        } else if (d.id.startsWith('C')) {
           return 'blue';
-        } else if (d.name.startsWith('D')) {
+        } else if (d.id.startsWith('D')) {
           return 'red';
-        } else if (d.name.startsWith('R')) {
+        } else if (d.id.startsWith('R')) {
             return 'yellow';
-        } else if (d.name.startsWith('E')) {
+        } else if (d.id.startsWith('E')) {
             return 'black';
         } else {
           return 'lightblue';
